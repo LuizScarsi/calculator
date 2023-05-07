@@ -1,0 +1,51 @@
+body, .symbols, .calculator, .buttons, .functions {
+    display: flex;
+}
+
+.calculator {
+    width: 600px;
+    flex-direction: column;
+    margin: auto;
+}
+
+.display {
+    flex: 1 1 1;
+    height: 120px;
+    border: 2px solid black;
+}
+
+.container {
+    flex-direction: column;
+    display: flex;
+}
+
+.container.one {
+    flex: 4;
+}
+
+.container.two {
+    flex: 1;
+}
+
+.containers {
+    display: flex;
+}
+
+button {
+    flex: 1;
+}
+
+.numeric {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    height: 125px;
+}
+
+.operator, .misc {
+    height: 100px;
+}
