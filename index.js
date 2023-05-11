@@ -1,5 +1,20 @@
+const digits = Array.from(document.querySelectorAll('.digit'));
+const display = document.querySelector('.display');
+const functions = Array.from(document.querySelectorAll('.function'));
 
+digits.forEach(digit => digit.addEventListener('click', () => {
+    if (digit.textContent == 0 && display.textContent == '') return 0;
+    if (digit.textContent == '.'){
+        if (display.textContent == ''){
+            display.textContent = '0.'
+            return 0;
+        } else if(display.textContent.split('').includes('.')) {
+            return 0;
+        }
+    }
+    display.textContent += digit.textContent;
 
+}))
 function operate(operator, firstNumber, secondNumber = null){
     switch(operator){
         case '+':
