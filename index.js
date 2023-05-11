@@ -1,3 +1,5 @@
+
+
 function operate(operator, firstNumber, secondNumber = null){
     switch(operator){
         case '+':
