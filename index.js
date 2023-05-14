@@ -1,21 +1,37 @@
 const digits = Array.from(document.querySelectorAll('.digit'));
 const display = document.querySelector('.display');
+const firstNumber = [];
 const operation = [];
+const secondNumber = [];
 
 digits.forEach(digit => digit.addEventListener('click', ()=>{
-    if (digit.textContent == 0 && display.textContent == '') return 0;
-    if (digit.textContent == '.'){
-        if (display.textContent == ''){
-            operation.push('0','.')
-            display.textContent = '0.';
-            return 0;
-        } else if(operation.includes('.')) {
-            return 0;
-        }
-    }
-    operation.push(digit.textContent);
-    display.textContent += digit.textContent;
-    console.log(operation)
+    if (operation.length > 0){
+        if (digit.textContent == 0 && display.textContent == '') return 0;
+        if (digit.textContent == '.'){
+            if (secondNumber.length == 0){
+                secondNumber.push('0','.');
+                display.textContent += '0.';
+                return 0;
+            } else if(secondNumber.includes('.')) {
+                return 0;
+            };
+        };
+        secondNumber.push(digit.textContent);
+        display.textContent += digit.textContent;
+    } else {
+        if (digit.textContent == 0 && display.textContent == '') return 0;
+        if (digit.textContent == '.'){
+            if (display.textContent == ''){
+                firstNumber.push('0','.')
+                display.textContent = '0.';
+                return 0;
+            } else if(firstNumber.includes('.')) {
+                return 0;
+            };
+        };
+        firstNumber.push(digit.textContent);
+        display.textContent += digit.textContent;
+    };
 }));
 
 const functions = Array.from(document.querySelectorAll('.function'));
@@ -23,12 +39,24 @@ const functions = Array.from(document.querySelectorAll('.function'));
 functions.forEach(func => func.addEventListener('click',()=>{
     switch(func.id){
         case 'clr':
-            operation.splice(0, operation.length)
+            operation.pop();
+            firstNumber.splice(0, firstNumber.length);
+            secondNumber.splice(0, secondNumber.length);
             display.textContent = '';
             break;
         case 'back':
-            operation.pop();
+            if (operation.length == 0) firstNumber.pop();
+            else if (operation.length > 0 && secondNumber.length ==0) operation.pop();
+            else if (operation.length > 0 && secondNumber.length > 0) secondNumber.pop();
             display.textContent = display.textContent.slice(0,-1);
+            break;
+        case '=':
+            const result = operate(operation[0], firstNumber, secondNumber);
+            display.textContent = result.toFixed(4);
+            firstNumber.splice(0, firstNumber.length);
+            operation.pop();
+            secondNumber.splice(0, secondNumber.length);
+            firstNumber.push(result);
             break;
     };
     if (operation.includes('+')||operation.includes('-')||operation.includes('*')||operation.includes('/')){
@@ -47,9 +75,40 @@ functions.forEach(func => func.addEventListener('click',()=>{
             operation.push(func.id);
             display.textContent += func.id;
             break;
+        case '/':
+            operation.push(func.id);
+            display.textContent += func.id;
+            break;
+        case '**':
+            const squared = operate(func.id, firstNumber)
+            display.textContent = squared.toFixed(4);
+            firstNumber.splice(0, firstNumber.length);
+            operation.pop();
+            secondNumber.splice(0, secondNumber.length);
+            firstNumber.push(squared);
+            break;
+        case 'sqrt':
+            const sqrt = operate(func.id, firstNumber)
+            display.textContent = sqrt.toFixed(4);
+            firstNumber.splice(0, firstNumber.length);
+            operation.pop();
+            secondNumber.splice(0, secondNumber.length);
+            firstNumber.push(sqrt);
+            break;
     };
 }));
 function operate(operator, firstNumber, secondNumber = null){
+    firstNumber = +(firstNumber).reduce((acc, value) => {
+        acc += value;
+        return acc;
+    });
+    if (secondNumber != null) {
+        secondNumber = +(secondNumber).reduce((acc, value) => {
+            acc += value;
+            return acc;
+        });
+    };
+
     switch(operator){
         case '+':
             return add(firstNumber, secondNumber);
